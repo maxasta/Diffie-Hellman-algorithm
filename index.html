@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diffie-Hellman Visualizer</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Diffie-Hellman Visualizer</h1>
+  <div class="theme-toggle">
+    <label for="theme-switch">Dark Theme:</label>
+    <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
+  </div>
+  <div class="explanation">
+    <p>The Diffie-Hellman key exchange allows parties to establish a shared secret over an insecure channel.</p>
+    <button id="theory-button" onclick="showTheory()">Theory</button>
+  </div>
+
+  <div class="controls">
+    <p id="explanation-text">⚠️ Please select a mode (2 or 3 Participants) to begin the key exchange process. This step is required to continue!</p>
+    <div class="input-controls">
+      <label class="input-group">
+        <span style="color: #e74c3c;">p</span>: 
+        <select id="param-p">
+          <option value="5">5</option>
+          <option value="7">7</option>
+          <option value="11">11</option>
+          <option value="23" selected>23</option>
+          <option value="47">47</option>
+          <option value="59">59</option>
+          <option value="83">83</option>
+          <option value="107">107</option>
+          <option value="167">167</option>
+          <option value="179">179</option>
+        </select>
+        <div id="p-error" class="speech-bubble error"></div>
+        <div id="p-success" class="speech-bubble success"></div>
+      </label>
+      <label class="input-group">
+        <span style="color: #e74c3c;">g</span>: <input type="number" id="param-g" value="5" min="2" max="99">
+        <div id="g-error" class="speech-bubble error"></div>
+        <div id="g-success" class="speech-bubble success"></div>
+      </label>
+      <div class="hint-block">
+        <p>P must be a prime number, and (P-1)/2 must also be prime. Choose from the safe list for secure demo.</p>
+      </div>
+      <button class="mode-button" onclick="setMode(2)">2 Participants</button>
+      <button class="mode-button" onclick="setMode(3)">3 Participants</button>
+    </div>
+    <div class="action-controls">
+      <button id="start-button" onclick="startExchange()" disabled>Start Exchange</button>
+      <button id="stop-button" onclick="stopExchange()" disabled>Stop</button>
+      <button id="back-button" onclick="backStep()" disabled>Back</button>
+      <button id="resume-button" onclick="resumeExchange()" disabled>Resume</button>
+      <button onclick="reset()">Reset</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="person" id="alice">
+      <h2>Alice</h2>
+      <img src="img/Alice.png" alt="Alice">
+      <p>Private Key: <span id="alice-private"></span></p>
+      <p id="alice-private-formula"></p>
+      <p>Public Key: <span id="alice-public"></span></p>
+      <p id="alice-public-formula"></p>
+      <p>Shared Secret: <span id="alice-secret"></span></p>
+      <p id="alice-secret-formula"></p>
+    </div>
+
+    <div class="arrow" id="arrow1">⇄</div>
+
+    <div class="person" id="bob">
+      <h2>Bob</h2>
+      <img src="img/Bob.png" alt="Bob">
+      <p>Private Key: <span id="bob-private"></span></p>
+      <p id="bob-private-formula"></p>
+      <p>Public Key: <span id="bob-public"></span></p>
+      <p id="bob-public-formula"></p>
+      <p>Shared Secret: <span id="bob-secret"></span></p>
+      <p id="bob-secret-formula"></p>
+    </div>
+
+    <div class="arrow" id="arrow2">⇄</div>
+
+    <div class="person" id="charlie">
+      <h2>Charlie</h2>
+      <img src="img/Charlie.png" alt="Charlie">
+      <p>Private Key: <span id="charlie-private"></span></p>
+      <p id="charlie-private-formula"></p>
+      <p>Public Key: <span id="charlie-public"></span></p>
+      <p id="charlie-public-formula"></p>
+      <p>Shared Secret: <span id="charlie-secret"></span></p>
+      <p id="charlie-secret-formula"></p>
+    </div>
+  </div>
+
+  <!-- Modal window for theory -->
+  <div id="theory-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideTheory()">×</span>
+      <h2>Diffie-Hellman (DH) Algorithm Theory</h2>
+      <p>The Diffie-Hellman (DH) algorithm is a mathematical asymmetric algorithm that allows two computers to create the same shared secret key without any prior communication. The sender and receiver never actually exchange this shared key. However, because it is known to both parties, it can be used by an encryption algorithm to encrypt traffic between the two systems.</p>
+      <p>The security of the DH algorithm is based on the fact that it uses incredibly large numbers in its calculations. For example, a 1024-bit DH number is approximately equal to a 309-digit decimal number. Considering that a billion has 10 digits (1,000,000,000), it is easy to imagine the difficulty of working with not one, but several decimal numbers consisting of 309 digits. Unfortunately, asymmetric key systems are too slow and cannot be used to encrypt large amounts of data. That is why the standard practice is to encrypt large amounts of traffic with a symmetric algorithm, such as 3DES or AES, and use the Diffie-Hellman algorithm to create the keys that will be used by the encryption algorithm.</p>
+      <table>
+        <tr>
+          <th>Alice</th>
+          <th></th>
+          <th>Bob</th>
+          <th></th>
+          <th>Charlie</th>
+        </tr>
+        <tr>
+          <td>Known</td>
+          <td>Unknown</td>
+          <td>Known</td>
+          <td>Unknown</td>
+          <td>Known</td>
+          <td>Unknown</td>
+        </tr>
+        <tr>
+          <td>p = 23</td>
+          <td></td>
+          <td>p = 23</td>
+          <td></td>
+          <td>p = 23</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>g = 5</td>
+          <td></td>
+          <td>g = 5</td>
+          <td></td>
+          <td>g = 5</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>a = 6</td>
+          <td>b, c</td>
+          <td>b = 15</td>
+          <td>a, c</td>
+          <td>c = 8</td>
+          <td>a, b</td>
+        </tr>
+        <tr>
+          <td>A = 5^a mod 23</td>
+          <td></td>
+          <td>B = 5^b mod 23</td>
+          <td></td>
+          <td>C = 5^c mod 23</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>A = 5^6 mod 23 = 8</td>
+          <td></td>
+          <td>B = 5^15 mod 23 = 19</td>
+          <td></td>
+          <td>C = 5^8 mod 23 = 16</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>B = 19, C = 16</td>
+          <td></td>
+          <td>A = 8, C = 16</td>
+          <td></td>
+          <td>A = 8, B = 19</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>S = C^a mod 23</td>
+          <td></td>
+          <td>S = A^b mod 23</td>
+          <td></td>
+          <td>S = B^c mod 23</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>S = 16^6 mod 23 = 2</td>
+          <td></td>
+          <td>S = 8^15 mod 23 = 2</td>
+          <td></td>
+          <td>S = 19^8 mod 23 = 2</td>
+          <td>S</td>
+        </tr>
+      </table>
+      <h3>Additional Theory</h3>
+      <p>🔐 <strong>Diffie-Hellman Key Exchange — Step-by-Step Theory</strong><br>The Diffie-Hellman algorithm is like a magic trick that lets two people create a shared secret code, even if someone is listening. Here’s how it works, explained simply:</p>
+      <p><strong>✅ Step 1: Agree on Public Numbers</strong><br>Imagine two friends, Alice and Bob, want to create a secret code. They start by agreeing on two numbers that everyone can know:<br>- A prime number p = 17<br>- A base number g = 3<br>These numbers are public and act as the starting point for their "math game."</p>
+      <p><strong>✅ Step 2: Pick Secret Numbers</strong><br>Now, each person chooses a secret number that only they know:<br>- Alice picks 4<br>- Bob picks 9<br>These are their private keys, like secret passwords they don’t share with anyone.</p>
+      <p><strong>✅ Step 3: Share Public Keys</strong><br>They do some math using g, p, and their secret numbers:<br>- Alice: 3^4 = 81, and 81 mod 17 = 13 → Alice’s public key is 13<br>- Bob: 3^9 = 19683, and 19683 mod 17 = 14 → Bob’s public key is 14<br>They send these public keys to each other. It’s okay if someone else sees these numbers—they’re not the secret!</p>
+      <p><strong>✅ Step 4: Create the Shared Secret</strong><br>Now, they use each other’s public key and their own secret to find the same shared code:<br>- Alice takes Bob’s 14: 14^4 = 38416, and 38416 mod 17 = 1<br>- Bob takes Alice’s 13: 13^9 = 10604499373, and 10604499373 mod 17 = 1<br>🎉 <strong>Result:</strong> Both get the same number—1! This is their shared secret, which they can use as a key to lock and unlock messages.</p>
+      <p><strong>❓ Why Can’t a Hacker Break It?</strong><br>Let’s say someone, Eve, is listening. She knows:<br>- p = 17<br>- g = 3<br>- The public keys: 13 and 14<br>But she doesn’t know the secrets: 4 and 9. To find them, she’d need to solve a really hard math problem called the "discrete logarithm." With big numbers, this is super difficult—even for computers!</p>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
