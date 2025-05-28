@@ -5,15 +5,15 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
-// 1) Раздаём статику
+// 1) Раздаём статику из папки public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 2) Фоллбэк на любой путь — тут обязательно '/*', а не '*'
-app.get('/*', (req, res) => {
+// 2) На любые «ненайденные» запросы отдаем index.html
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 3) Запускаем сервер
+// 3) Запуск
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });
