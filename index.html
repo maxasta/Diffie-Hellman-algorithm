@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -45,8 +45,8 @@
       <div class="hint-block">
         <p>P must be a prime number, and (P-1)/2 must also be prime. Choose from the safe list for secure demo.</p>
       </div>
-      <button class="mode-button" onclick="setMode(2)">2 Participants</button>
-      <button class="mode-button" onclick="setMode(3)">3 Participants</button>
+      <button class="mode-button" onclick="setMode(2); showTwoParticipantsTheory()">2 Participants</button>
+      <button class="mode-button" onclick="setMode(3); showThreeParticipantsTheory()">3 Participants</button>
     </div>
     <div class="action-controls">
       <button id="start-button" onclick="startExchange()" disabled>Start Exchange</button>
@@ -58,7 +58,7 @@
   </div>
 
   <div class="container">
-    <div class="person" id="alice">
+    <div class="person" id="alice" onclick="showAliceTheory()">
       <h2>Alice</h2>
       <img src="img/Alice.png" alt="Alice">
       <p>Private Key: <span id="alice-private"></span></p>
@@ -71,7 +71,7 @@
 
     <div class="arrow" id="arrow1">⇄</div>
 
-    <div class="person" id="bob">
+    <div class="person" id="bob" onclick="showBobTheory()">
       <h2>Bob</h2>
       <img src="img/Bob.png" alt="Bob">
       <p>Private Key: <span id="bob-private"></span></p>
@@ -84,7 +84,7 @@
 
     <div class="arrow" id="arrow2">⇄</div>
 
-    <div class="person" id="charlie">
+    <div class="person" id="charlie" onclick="showCharlieTheory()">
       <h2>Charlie</h2>
       <img src="img/Charlie.png" alt="Charlie">
       <p>Private Key: <span id="charlie-private"></span></p>
@@ -96,7 +96,7 @@
     </div>
   </div>
 
-  <!-- Modal window for theory -->
+  <!-- Modal window for general theory -->
   <div id="theory-modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="hideTheory()">×</span>
@@ -191,6 +191,61 @@
       <p><strong>✅ Step 3: Share Public Keys</strong><br>They do some math using g, p, and their secret numbers:<br>- Alice: 3^4 = 81, and 81 mod 17 = 13 → Alice’s public key is 13<br>- Bob: 3^9 = 19683, and 19683 mod 17 = 14 → Bob’s public key is 14<br>They send these public keys to each other. It’s okay if someone else sees these numbers—they’re not the secret!</p>
       <p><strong>✅ Step 4: Create the Shared Secret</strong><br>Now, they use each other’s public key and their own secret to find the same shared code:<br>- Alice takes Bob’s 14: 14^4 = 38416, and 38416 mod 17 = 1<br>- Bob takes Alice’s 13: 13^9 = 10604499373, and 10604499373 mod 17 = 1<br>🎉 <strong>Result:</strong> Both get the same number—1! This is their shared secret, which they can use as a key to lock and unlock messages.</p>
       <p><strong>❓ Why Can’t a Hacker Break It?</strong><br>Let’s say someone, Eve, is listening. She knows:<br>- p = 17<br>- g = 3<br>- The public keys: 13 and 14<br>But she doesn’t know the secrets: 4 and 9. To find them, she’d need to solve a really hard math problem called the "discrete logarithm." With big numbers, this is super difficult—even for computers!</p>
+    </div>
+  </div>
+
+  <!-- Modal for 2 Participants Theory -->
+  <div id="two-participants-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideTwoParticipantsTheory()">×</span>
+      <h2>How Does Key Exchange Work for 2 Participants? 🗝️</h2>
+      <div id="two-participants-theory-content">
+        <!-- Theory content will be inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for 3 Participants Theory -->
+  <div id="three-participants-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideThreeParticipantsTheory()">×</span>
+      <h2>How Does Key Exchange Work for 3 Participants? 🗝️</h2>
+      <div id="three-participants-theory-content">
+        <!-- Theory content will be inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Alice's Theory -->
+  <div id="alice-theory-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideAliceTheory()">×</span>
+      <h2>Alice's Role in Diffie-Hellman 🧙‍♀️</h2>
+      <div id="alice-theory-content">
+        <!-- Theory content will be inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Bob's Theory -->
+  <div id="bob-theory-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideBobTheory()">×</span>
+      <h2>Bob's Role in Diffie-Hellman 🧙‍♂️</h2>
+      <div id="bob-theory-content">
+        <!-- Theory content will be inserted dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Charlie's Theory -->
+  <div id="charlie-theory-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="hideCharlieTheory()">×</span>
+      <h2>Charlie's Role in Diffie-Hellman 🧙</h2>
+      <div id="charlie-theory-content">
+        <!-- Theory content will be inserted dynamically -->
+      </div>
     </div>
   </div>
 
