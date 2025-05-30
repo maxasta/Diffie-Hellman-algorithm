@@ -1,4 +1,4 @@
- let mode = null;
+let mode = null;
 let p = 23;
 let g = 5;
 let timers = [];
